@@ -11,10 +11,9 @@ const SettingsPage = () => {
   const handleLogout = () => {
     // In a real app, this would call an authentication service to log out
     toast.success("Logged out successfully");
-    setTimeout(() => {
-      // Navigate to login page instead of a non-existent logout route
-      navigate('/login');
-    }, 1000);
+    
+    // Navigate directly to login page
+    navigate('/login');
   };
 
   return (

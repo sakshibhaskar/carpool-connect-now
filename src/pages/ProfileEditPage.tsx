@@ -43,15 +43,27 @@ const ProfileEditPage = () => {
   };
 
   const handleSave = () => {
-    // Update user data
+    // Update user data with all form values
     setUser({
       ...user,
       firstName: formData.firstName,
       lastName: formData.lastName,
+      phoneNumber: formData.phone,
     });
 
+    // In a real app, you would typically make an API call here
+    // to update the user's profile on the server
+    
     // Show success message
     toast.success('Profile updated successfully');
+    
+    // Store updated information in localStorage for persistence across page refreshes
+    localStorage.setItem('userProfile', JSON.stringify({
+      ...user,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phoneNumber: formData.phone,
+    }));
     
     // Navigate back
     navigate('/profile');
@@ -71,6 +83,9 @@ const ProfileEditPage = () => {
       ...user,
       profilePicture: randomAvatar
     });
+    
+    // Store updated profilePicture in localStorage
+    localStorage.setItem('userProfilePicture', randomAvatar);
     
     toast.success('Profile picture updated successfully');
   };
@@ -115,6 +130,7 @@ const ProfileEditPage = () => {
           <button 
             className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-md"
             onClick={handleImageUpload}
+            aria-label="Upload profile picture"
           >
             <Camera className="h-4 w-4" />
           </button>
