@@ -1,12 +1,14 @@
 
 import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, DollarSign, Car, Plus, Minus, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, Clock, MapPin, DollarSign, Car, Plus, Minus, Users, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 const PublishRide = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     origin: '',
@@ -87,27 +89,18 @@ const PublishRide = () => {
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
+    } else {
+      navigate(-1);
     }
   };
 
   const handleSubmit = () => {
     // Submit the ride
     toast.success('Your ride has been published successfully!');
-    // Reset form and navigate to home or ride detail
-    setStep(1);
-    setFormData({
-      origin: '',
-      destination: '',
-      departureDate: '',
-      departureTime: '',
-      seats: 3,
-      price: '',
-      car: '',
-      luggage: 'medium',
-      description: '',
-      phoneNumber: '',
-      genderPreference: 'any',
-    });
+    // Navigate to user's rides page
+    setTimeout(() => {
+      navigate('/my-rides');
+    }, 1000);
   };
 
   const renderStep = () => {
@@ -369,6 +362,22 @@ const PublishRide = () => {
 
   return (
     <div className="min-h-screen p-6">
+      {/* Header with back button */}
+      <div className="flex items-center mb-6">
+        <button 
+          onClick={handleBack}
+          className="p-1 mr-2"
+        >
+          <ArrowLeft className="h-6 w-6 text-secondary" />
+        </button>
+        <h1 className="text-xl font-semibold text-secondary">
+          {step === 1 ? 'Publish a Ride' : 
+           step === 2 ? 'When & Seats' : 
+           step === 3 ? 'Price & Preferences' : 
+           'Final Details'}
+        </h1>
+      </div>
+      
       {/* Progress indicator */}
       <div className="flex justify-between mb-6">
         {[1, 2, 3, 4].map((i) => (

@@ -1,19 +1,19 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Camera } from 'lucide-react';
+import { ArrowLeft, Camera, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { User } from '@/types';
+import { User as UserType } from '@/types';
 import { Avatar } from '@/components/ui/avatar';
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
 
   // Mock user data - in a real app, this would come from authentication context
-  const [user, setUser] = useState<User>({
+  const [user, setUser] = useState<UserType>({
     id: 'user-1',
     firstName: 'John',
     lastName: 'Doe',
@@ -58,8 +58,21 @@ const ProfileEditPage = () => {
   };
 
   const handleImageUpload = () => {
-    // In a real app, this would open a file picker
-    toast.info('Image upload functionality would be integrated here');
+    // Simulate image upload with a random avatar
+    const avatars = [
+      '/lovable-uploads/8709c341-a273-4678-8345-65a0ccb7e0ec.png',
+      '/lovable-uploads/b63d7144-b3e0-4e03-a033-46a27dad4dba.png',
+      '/lovable-uploads/b17b6fab-90bd-4ac0-aa4d-0d79a66be01b.png'
+    ];
+    
+    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+    
+    setUser({
+      ...user,
+      profilePicture: randomAvatar
+    });
+    
+    toast.success('Profile picture updated successfully');
   };
 
   return (
@@ -95,7 +108,7 @@ const ProfileEditPage = () => {
               />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-3xl text-gray-500 bg-gray-200">
-                {formData.firstName?.charAt(0) || '?'}
+                <User className="h-12 w-12 text-gray-400" />
               </div>
             )}
           </Avatar>

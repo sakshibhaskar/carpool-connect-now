@@ -84,7 +84,7 @@ const HomePage: React.FC = () => {
           </button>
           
           <button 
-            onClick={() => navigate('/rides')}
+            onClick={() => navigate('/my-rides')}
             className="flex flex-col items-center py-1 px-3 text-gray-500"
           >
             <CarFront className="h-6 w-6" />
