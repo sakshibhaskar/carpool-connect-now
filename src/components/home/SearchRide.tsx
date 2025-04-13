@@ -1,16 +1,20 @@
 
 import React, { useState } from 'react';
-import { Search, Calendar, User, MapPin } from 'lucide-react';
+import { Search, Calendar as CalendarIcon, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 const SearchRide: React.FC = () => {
   const navigate = useNavigate();
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [searchData, setSearchData] = useState({
     origin: '',
     destination: '',
-    date: 'Today',
     passengers: 1,
   });
 
@@ -22,7 +26,7 @@ const SearchRide: React.FC = () => {
   };
 
   const handleSearch = () => {
-    navigate(`/rides?origin=${searchData.origin}&destination=${searchData.destination}&date=${searchData.date}&passengers=${searchData.passengers}`);
+    navigate(`/rides?origin=${searchData.origin}&destination=${searchData.destination}&date=${date ? format(date, 'yyyy-MM-dd') : 'today'}&passengers=${searchData.passengers}`);
   };
 
   return (
@@ -52,16 +56,25 @@ const SearchRide: React.FC = () => {
           />
         </div>
         
-        {/* Date */}
+        {/* Date with Calendar */}
         <div className="flex items-center space-x-4 border-b pb-3">
-          <Calendar className="text-gray-400 flex-shrink-0" size={24} />
-          <Input 
-            type="text" 
-            placeholder="Today"
-            className="border-0 p-0 focus:ring-0"
-            value={searchData.date}
-            onChange={(e) => handleInputChange('date', e.target.value)}
-          />
+          <CalendarIcon className="text-gray-400 flex-shrink-0" size={24} />
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex-1 text-left p-0 focus:outline-none">
+                {date ? format(date, 'MMMM d, yyyy') : "Select date"}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 z-50" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+                className="p-3 pointer-events-auto"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
         
         {/* Passengers */}

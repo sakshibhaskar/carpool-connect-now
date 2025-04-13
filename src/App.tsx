@@ -13,8 +13,12 @@ import RideSearchPage from "./pages/RideSearchPage";
 import RideDetailPage from "./pages/RideDetailPage";
 import PublishRidePage from "./pages/PublishRidePage";
 import ProfilePage from "./pages/ProfilePage";
+import ProfileEditPage from "./pages/ProfileEditPage";
 import ChatPage from "./pages/ChatPage";
 import MessagesPage from "./pages/MessagesPage";
+import SettingsPage from "./pages/SettingsPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import EmergencyContactsPage from "./pages/EmergencyContactsPage";
 
 const queryClient = new QueryClient();
 
@@ -33,8 +37,12 @@ const App = () => (
           <Route path="/rides/:id" element={<RideDetailPage />} />
           <Route path="/publish" element={<PublishRidePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/edit" element={<ProfileEditPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:id" element={<ChatPage />} />
+          <Route path="/emergency-contacts" element={<EmergencyContactsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
