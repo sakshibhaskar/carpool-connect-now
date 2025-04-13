@@ -1,154 +1,329 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Car, PlusCircle, Calendar, MapPin } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SOSButton from '@/components/emergency/SOSButton';
-import { Ride } from '@/types';
-import { generateMockRides } from '@/lib/utils';
-import { toast } from 'sonner';
+import { ArrowLeft, Search, Car } from 'lucide-react';
+import { Avatar } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { format } from 'date-fns';
+
+interface Ride {
+  id: string;
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+  date: Date;
+  origin: string;
+  destination: string;
+  price: number;
+  seats: {
+    total: number;
+    available: number;
+  };
+  car?: {
+    make: string;
+    model: string;
+    color: string;
+  };
+  passengers: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+  }[];
+}
 
 const MyRidesPage = () => {
   const navigate = useNavigate();
-  const [publishedRides, setPublishedRides] = useState<Ride[]>([]);
+  const [rides, setRides] = useState<Ride[]>([]);
+  const [filter, setFilter] = useState<string>('all');
+  const [search, setSearch] = useState<string>('');
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
-    // Simulate API call to fetch user's published rides
-    const timer = setTimeout(() => {
-      // Get some mock rides and set them as published by the current user
-      const mockRides = generateMockRides(3).map(ride => ({
-        ...ride,
-        isPublishedByCurrentUser: true
-      }));
-      
-      setPublishedRides(mockRides);
+    // Simulate API call
+    setTimeout(() => {
+      const mockRides: Ride[] = [
+        {
+          id: 'ride-1',
+          status: 'upcoming',
+          date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days in future
+          origin: 'San Francisco',
+          destination: 'Los Angeles',
+          price: 45,
+          seats: {
+            total: 4,
+            available: 2
+          },
+          car: {
+            make: 'Toyota',
+            model: 'Prius',
+            color: 'Blue'
+          },
+          passengers: [
+            {
+              id: 'user-1',
+              firstName: 'John',
+              lastName: 'Smith',
+              avatar: '/lovable-uploads/8709c341-a273-4678-8345-65a0ccb7e0ec.png'
+            },
+            {
+              id: 'user-2',
+              firstName: 'Sarah',
+              lastName: 'Johnson'
+            }
+          ]
+        },
+        {
+          id: 'ride-2',
+          status: 'ongoing',
+          date: new Date(), // Now
+          origin: 'Los Angeles',
+          destination: 'San Diego',
+          price: 35,
+          seats: {
+            total: 3,
+            available: 1
+          },
+          car: {
+            make: 'Honda',
+            model: 'Civic',
+            color: 'Red'
+          },
+          passengers: [
+            {
+              id: 'user-3',
+              firstName: 'Michael',
+              lastName: 'Brown',
+              avatar: '/lovable-uploads/b63d7144-b3e0-4e03-a033-46a27dad4dba.png'
+            },
+            {
+              id: 'user-4',
+              firstName: 'Emma',
+              lastName: 'Wilson'
+            }
+          ]
+        },
+        {
+          id: 'ride-3',
+          status: 'completed',
+          date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+          origin: 'San Diego',
+          destination: 'Las Vegas',
+          price: 65,
+          seats: {
+            total: 4,
+            available: 0
+          },
+          car: {
+            make: 'Tesla',
+            model: 'Model 3',
+            color: 'White'
+          },
+          passengers: [
+            {
+              id: 'user-5',
+              firstName: 'Laura',
+              lastName: 'Taylor',
+              avatar: '/lovable-uploads/b63d7144-b3e0-4e03-a033-46a27dad4dba.png'
+            },
+            {
+              id: 'user-6',
+              firstName: 'David',
+              lastName: 'Brown'
+            },
+            {
+              id: 'user-7',
+              firstName: 'Sophia',
+              lastName: 'Martinez'
+            },
+            {
+              id: 'user-8',
+              firstName: 'James',
+              lastName: 'Anderson'
+            }
+          ]
+        }
+      ];
+      setRides(mockRides);
       setLoading(false);
-    }, 600);
-    
-    return () => clearTimeout(timer);
+    }, 1000);
   }, []);
+
+  const filteredRides = rides.filter(ride => {
+    if (filter !== 'all' && ride.status !== filter) return false;
+    
+    if (search) {
+      const searchTerm = search.toLowerCase();
+      return (
+        ride.origin.toLowerCase().includes(searchTerm) ||
+        ride.destination.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    return true;
+  });
+
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'upcoming':
+        return <Badge variant="default" className="bg-primary">Upcoming</Badge>;
+      case 'ongoing':
+        return <Badge variant="default" className="bg-green-600">Ongoing</Badge>;
+      case 'completed':
+        return <Badge variant="outline" className="text-green-600 border-green-600">Completed</Badge>;
+      case 'cancelled':
+        return <Badge variant="outline" className="text-red-600 border-red-600">Cancelled</Badge>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-white p-4 border-b flex items-center justify-between">
-        <div className="flex items-center">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-1"
-          >
-            <ArrowLeft className="h-6 w-6 text-secondary" />
-          </button>
-          <h1 className="text-xl font-semibold text-secondary ml-4">My Rides</h1>
-        </div>
-        <Button 
-          size="sm"
-          className="rounded-full"
-          onClick={() => navigate('/publish')}
+      <div className="bg-white p-4 border-b flex items-center">
+        <button 
+          onClick={() => navigate(-1)}
+          className="p-1"
         >
-          <PlusCircle className="h-4 w-4 mr-1" />
-          Publish
-        </Button>
+          <ArrowLeft className="h-6 w-6 text-secondary" />
+        </button>
+        <h1 className="text-xl font-semibold text-secondary ml-4">My Rides</h1>
       </div>
       
-      {/* Tabs */}
-      <Tabs defaultValue="published" className="w-full pt-4">
-        <div className="px-4">
-          <TabsList className="w-full">
-            <TabsTrigger value="published" className="flex-1">Published</TabsTrigger>
-            <TabsTrigger value="booked" className="flex-1">Booked</TabsTrigger>
-          </TabsList>
+      {/* Search and filters */}
+      <div className="p-4 bg-white">
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search rides..."
+            className="pl-10"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
         
-        <TabsContent value="published" className="p-4 pt-2">
-          {loading ? (
-            // Loading skeletons
-            [...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-lg p-4 mb-4 animate-pulse">
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-              </div>
-            ))
-          ) : publishedRides.length > 0 ? (
-            // Published rides list
-            publishedRides.map((ride) => (
-              <div 
-                key={ride.id}
-                className="bg-white rounded-lg p-4 mb-4 border border-gray-100 shadow-sm"
-                onClick={() => navigate(`/rides/${ride.id}`)}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <Calendar className="h-5 w-5 text-gray-500 mr-2" />
-                    <span className="text-sm text-gray-500">
-                      {new Date(ride.departureTime).toLocaleDateString([], {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                  </div>
-                  <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
-                    {ride.availableSeats} seats left
-                  </span>
-                </div>
-                
-                <div className="font-medium text-lg mb-3">
-                  {ride.origin} → {ride.destination}
-                </div>
-                
-                <div className="flex justify-between items-center mt-4">
-                  <div className="flex items-center">
-                    <Car className="h-5 w-5 text-gray-500 mr-2" />
-                    <span className="text-sm text-gray-600">{ride.carDetails}</span>
-                  </div>
-                  <div className="font-semibold text-primary">${ride.price}</div>
-                </div>
-              </div>
-            ))
-          ) : (
-            // Empty state
-            <div className="bg-white rounded-lg p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Car className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">No published rides</h3>
-              <p className="text-gray-500 mb-6">
-                Start earning by offering rides to others
-              </p>
-              <Button onClick={() => navigate('/publish')}>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Publish a ride
-              </Button>
-            </div>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="booked" className="p-4 pt-2">
-          <div 
-            className="bg-white rounded-lg p-8 text-center"
-            onClick={() => navigate('/bookings')}
+        <div className="flex mt-4 space-x-3 overflow-x-auto pb-2 scrollbar-hide">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${filter === 'all' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
           >
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Calendar className="h-8 w-8 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-medium mb-2">View your bookings</h3>
-            <p className="text-gray-500 mb-6">
-              Check your booked rides
-            </p>
-            <Button onClick={() => navigate('/bookings')}>
-              My Bookings
-            </Button>
-          </div>
-        </TabsContent>
-      </Tabs>
+            All
+          </button>
+          <button
+            onClick={() => setFilter('upcoming')}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${filter === 'upcoming' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+          >
+            Upcoming
+          </button>
+          <button
+            onClick={() => setFilter('ongoing')}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${filter === 'ongoing' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+          >
+            Ongoing
+          </button>
+          <button
+            onClick={() => setFilter('completed')}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${filter === 'completed' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+          >
+            Completed
+          </button>
+          <button
+            onClick={() => setFilter('cancelled')}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${filter === 'cancelled' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+          >
+            Cancelled
+          </button>
+        </div>
+      </div>
       
-      {/* SOS Button */}
-      <SOSButton />
+      {/* Rides list */}
+      <div className="space-y-4 mt-4 px-4">
+        {loading ? (
+          // Loading skeleton
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="bg-white p-4 rounded-lg shadow-sm animate-pulse">
+              <div className="flex justify-between mb-3">
+                <div className="w-32 h-5 bg-gray-200 rounded"></div>
+                <div className="w-24 h-6 bg-gray-200 rounded-full"></div>
+              </div>
+              <div className="w-full h-4 bg-gray-200 rounded mb-3"></div>
+              <div className="flex justify-between items-center">
+                <div className="flex">
+                  <div className="w-24 h-4 bg-gray-200 rounded"></div>
+                </div>
+                <div className="w-16 h-5 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          ))
+        ) : filteredRides.length > 0 ? (
+          filteredRides.map(ride => (
+            <div 
+              key={ride.id} 
+              className="bg-white p-4 rounded-lg shadow-sm"
+              onClick={() => navigate(`/rides/${ride.id}`)}
+            >
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-500">
+                  {format(ride.date, 'MMM dd, yyyy')} · {format(ride.date, 'h:mm a')}
+                </span>
+                {getStatusBadge(ride.status)}
+              </div>
+              
+              <div className="text-secondary mb-3">
+                <span className="font-semibold">{ride.origin}</span> → <span className="font-semibold">{ride.destination}</span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <div className="flex items-center text-sm text-gray-600">
+                    {ride.car && (
+                      <div className="flex items-center mr-4">
+                        <Car className="h-4 w-4 mr-1" />
+                        <span>{ride.car.make} {ride.car.model}</span>
+                      </div>
+                    )}
+                    <div>
+                      {ride.seats.available}/{ride.seats.total} seats available
+                    </div>
+                  </div>
+                </div>
+                
+                <span className="text-primary font-semibold">${ride.price}</span>
+              </div>
+              
+              {/* Show passengers */}
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <span className="text-xs text-gray-500 mb-2 block">
+                  {ride.passengers.length} passenger{ride.passengers.length !== 1 ? 's' : ''}
+                </span>
+                <div className="flex overflow-hidden">
+                  {ride.passengers.slice(0, 4).map((passenger, index) => (
+                    <Avatar key={passenger.id} className={`h-8 w-8 border-2 border-white ${index > 0 ? '-ml-2' : ''}`}>
+                      {passenger.avatar ? (
+                        <img src={passenger.avatar} alt="Passenger" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full bg-gray-200 flex items-center justify-center text-xs">
+                          {passenger.firstName.charAt(0)}
+                        </div>
+                      )}
+                    </Avatar>
+                  ))}
+                  {ride.passengers.length > 4 && (
+                    <div className="h-8 w-8 rounded-full bg-gray-100 -ml-2 flex items-center justify-center text-xs text-gray-600">
+                      +{ride.passengers.length - 4}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="bg-white p-6 rounded-lg text-center">
+            <p className="text-gray-500">No rides found matching your criteria.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -12,7 +12,12 @@ const NotFound = () => {
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
-  }, [location.pathname]);
+    
+    // If user is trying to access /logout route, redirect them to login
+    if (location.pathname === '/logout') {
+      navigate('/login');
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50">
