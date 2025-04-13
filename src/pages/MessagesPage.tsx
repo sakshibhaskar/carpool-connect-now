@@ -46,7 +46,7 @@ const MessagesPage = () => {
           recipientId: 'user-3',
           recipientName: 'Michael Brown',
           recipientAvatar: '/lovable-uploads/b63d7144-b3e0-4e03-a033-46a27dad4dba.png',
-          lastMessage: 'Perfect! I'll be there.',
+          lastMessage: "Perfect! I'll be there.", // Fixed: Used double quotes to escape apostrophe
           timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
           unread: false
         }
