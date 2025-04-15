@@ -42,12 +42,12 @@ const BookingsPage = () => {
           rideId: 'ride-1',
           status: 'upcoming',
           date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days in future
-          origin: 'San Francisco',
-          destination: 'Los Angeles',
+          origin: 'Delhi',
+          destination: 'Chandigarh',
           driver: {
             id: 'driver-1',
-            firstName: 'John',
-            lastName: 'Smith',
+            firstName: 'Ajay',
+            lastName: 'Kumar',
             avatar: '/lovable-uploads/8709c341-a273-4678-8345-65a0ccb7e0ec.png',
             rating: 4.8
           },
@@ -58,12 +58,12 @@ const BookingsPage = () => {
           rideId: 'ride-2',
           status: 'completed',
           date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-          origin: 'Los Angeles',
-          destination: 'San Diego',
+          origin: 'Jaipur',
+          destination: 'Udaipur',
           driver: {
             id: 'driver-2',
-            firstName: 'Sarah',
-            lastName: 'Johnson',
+            firstName: 'Sonam',
+            lastName: 'Kapoor',
             rating: 4.9
           },
           price: 35
@@ -73,12 +73,12 @@ const BookingsPage = () => {
           rideId: 'ride-3',
           status: 'cancelled',
           date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-          origin: 'San Diego',
-          destination: 'Las Vegas',
+          origin: 'Mumbai',
+          destination: 'Pune',
           driver: {
             id: 'driver-3',
-            firstName: 'Michael',
-            lastName: 'Brown',
+            firstName: 'Rajeev',
+            lastName: 'Das',
             avatar: '/lovable-uploads/b63d7144-b3e0-4e03-a033-46a27dad4dba.png',
             rating: 4.6
           },
