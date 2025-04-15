@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Star, Clock, ZapIcon } from 'lucide-react';
+import { Star, ZapIcon } from 'lucide-react';
 import { Ride } from '@/types';
-import { formatCurrency, formatTime } from '@/lib/utils';
+import { formatTime } from '@/lib/utils';
 
 interface RideCardProps {
   ride: Ride;
@@ -15,7 +15,7 @@ const RideCard: React.FC<RideCardProps> = ({ ride, onClick }) => {
     : 0;
 
   return (
-    <div className="card-ride mb-4" onClick={onClick}>
+    <div className="bg-white rounded-xl p-4 shadow-sm" onClick={onClick}>
       <div className="border-b pb-4 mb-4">
         <div className="flex justify-between">
           <div>
@@ -28,7 +28,7 @@ const RideCard: React.FC<RideCardProps> = ({ ride, onClick }) => {
           </div>
           
           <div className="text-xl font-bold text-secondary">
-            {formatCurrency(ride.price, ride.currency)}
+            ₹{ride.price}
           </div>
         </div>
         
@@ -76,6 +76,11 @@ const RideCard: React.FC<RideCardProps> = ({ ride, onClick }) => {
           <div className="flex items-center text-gray-500">
             <Star className="h-4 w-4 text-yellow-400 mr-1" fill="currentColor" />
             <span>{ride.driver?.rating || 4.8}</span>
+            {ride.driver?.gender && (
+              <span className="ml-2 text-xs px-2 py-0.5 bg-gray-100 rounded-full">
+                {ride.driver.gender === 'female' ? 'Female driver' : 'Male driver'}
+              </span>
+            )}
           </div>
         </div>
         
@@ -86,6 +91,12 @@ const RideCard: React.FC<RideCardProps> = ({ ride, onClick }) => {
           </div>
         )}
       </div>
+      
+      {ride.carModel && (
+        <div className="mt-3 text-sm text-gray-500">
+          {ride.carModel} • {ride.carColor}
+        </div>
+      )}
     </div>
   );
 };
