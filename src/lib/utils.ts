@@ -1,4 +1,3 @@
-
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -53,18 +52,35 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
-// Mock data generators
 export function generateMockRides(count: number = 10) {
+  const popularRoutes = [
+    { origin: 'Mumbai', destination: 'Pune', basePrice: 349 },
+    { origin: 'Delhi', destination: 'Chandigarh', basePrice: 299 },
+    { origin: 'Bangalore', destination: 'Mysore', basePrice: 249 },
+    { origin: 'Chennai', destination: 'Pondicherry', basePrice: 279 },
+    { origin: 'Ahmedabad', destination: 'Vadodara', basePrice: 229 },
+    { origin: 'Jaipur', destination: 'Ajmer', basePrice: 199 },
+  ];
+
+  const indianDrivers = [
+    { firstName: 'Rajesh', lastName: 'Kumar', gender: 'male' },
+    { firstName: 'Priya', lastName: 'Sharma', gender: 'female', profilePicture: '/lovable-uploads/1cebc420-97f9-4f39-af90-5f342327a793.png' },
+    { firstName: 'Amit', lastName: 'Patel', gender: 'male' },
+    { firstName: 'Neha', lastName: 'Singh', gender: 'female' },
+    { firstName: 'Arjun', lastName: 'Reddy', gender: 'male' },
+    { firstName: 'Meera', lastName: 'Verma', gender: 'female' }
+  ];
+
   const rides = [];
-  const origins = ['New York', 'Boston', 'San Francisco', 'Los Angeles', 'Chicago', 'Miami'];
-  const destinations = ['Washington DC', 'Philadelphia', 'Seattle', 'Austin', 'Denver', 'Portland'];
   
   for (let i = 0; i < count; i++) {
+    const route = popularRoutes[i % popularRoutes.length];
+    const driver = indianDrivers[i % indianDrivers.length];
     const date = new Date();
-    date.setDate(date.getDate() + Math.floor(Math.random() * 14));
+    date.setDate(date.getDate() + Math.floor(Math.random() * 7));
     
-    const departureTime = `${String(Math.floor(Math.random() * 23)).padStart(2, '0')}:${String(Math.floor(Math.random() * 59)).padStart(2, '0')}`;
-    const durationHours = 2 + Math.floor(Math.random() * 5);
+    const departureTime = `${String(7 + Math.floor(Math.random() * 12)).padStart(2, '0')}:${String(Math.floor(Math.random() * 59)).padStart(2, '0')}`;
+    const durationHours = 2 + Math.floor(Math.random() * 3);
     const arrivalDate = new Date(date);
     arrivalDate.setHours(arrivalDate.getHours() + durationHours);
     
@@ -73,24 +89,26 @@ export function generateMockRides(count: number = 10) {
       driverId: `driver-${i + 1}`,
       driver: {
         id: `driver-${i + 1}`,
-        firstName: ['John', 'Jane', 'Michael', 'Emily', 'David', 'Sarah'][i % 6],
-        lastName: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller'][i % 6],
-        email: `driver${i + 1}@example.com`,
+        firstName: driver.firstName,
+        lastName: driver.lastName,
+        email: `${driver.firstName.toLowerCase()}@example.com`,
         verified: true,
-        rating: 4 + Math.random(),
+        rating: 4.5 + Math.random() * 0.4,
+        gender: driver.gender,
+        profilePicture: driver.profilePicture,
         createdAt: new Date()
       },
-      origin: origins[i % origins.length],
-      destination: destinations[i % destinations.length],
+      origin: route.origin,
+      destination: route.destination,
       departureDate: date,
       departureTime: departureTime,
       estimatedArrival: arrivalDate.toISOString(),
       availableSeats: 1 + Math.floor(Math.random() * 3),
-      price: 20 + Math.floor(Math.random() * 80),
-      currency: 'USD',
+      price: route.basePrice + Math.floor(Math.random() * 100),
+      currency: '₹',
       status: 'active',
-      carModel: ['Honda Civic', 'Toyota Corolla', 'Ford Focus', 'Hyundai Elantra'][i % 4],
-      carColor: ['Blue', 'Red', 'Silver', 'Black', 'White'][i % 5],
+      carModel: ['Maruti Swift', 'Hyundai i20', 'Honda City', 'Tata Nexon', 'Mahindra XUV300'][i % 5],
+      carColor: ['White', 'Silver', 'Grey', 'Black', 'Red'][i % 5],
       createdAt: new Date()
     });
   }
@@ -130,4 +148,3 @@ export function generateMockMessages(userId: string, otherUserId: string, count:
   
   return messages;
 }
-

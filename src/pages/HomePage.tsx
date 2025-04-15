@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchRide from '@/components/home/SearchRide';
@@ -12,7 +11,7 @@ const mockRides = generateMockRides(5);
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [rides] = useState<Ride[]>(mockRides);
+  const [rides] = useState<Ride[]>(generateMockRides(6));
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -36,9 +35,9 @@ const HomePage: React.FC = () => {
         <SearchRide />
       </div>
       
-      {/* Ride listings */}
+      {/* Popular rides */}
       <div className="container mx-auto px-4 flex-1 pb-24">
-        <h2 className="text-xl font-semibold text-secondary mb-4">Popular rides</h2>
+        <h2 className="text-xl font-semibold text-secondary mb-4">Popular rides in India</h2>
         
         <div className="space-y-4">
           {rides.map((ride) => (
@@ -50,7 +49,6 @@ const HomePage: React.FC = () => {
           ))}
         </div>
         
-        {/* Empty state for when there are no rides */}
         {rides.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-gray-500 text-center">
             <img 
@@ -64,7 +62,7 @@ const HomePage: React.FC = () => {
         )}
       </div>
       
-      {/* Bottom Navigation Bar */}
+      {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
         <div className="flex justify-around py-2">
           <button 
