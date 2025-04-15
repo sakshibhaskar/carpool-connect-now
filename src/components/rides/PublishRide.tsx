@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Users, ArrowLeft, Indian } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, ArrowLeft, Car, MinusIcon, PlusIcon, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -297,7 +297,7 @@ const PublishRide = () => {
                     className="rounded-full"
                     onClick={decrementSeats}
                   >
-                    <Minus className="h-4 w-4" />
+                    <MinusIcon className="h-4 w-4" />
                   </Button>
                   
                   <div className="flex items-center">
@@ -311,7 +311,7 @@ const PublishRide = () => {
                     className="rounded-full"
                     onClick={incrementSeats}
                   >
-                    <Plus className="h-4 w-4" />
+                    <PlusIcon className="h-4 w-4" />
                   </Button>
                 </div>
                 <p className="text-gray-500 text-sm mt-2">

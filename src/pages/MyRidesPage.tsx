@@ -34,7 +34,7 @@ interface Ride {
 const MyRidesPage = () => {
   const navigate = useNavigate();
   const [rides, setRides] = useState<Ride[]>([]);
-  const [filter, setFilter] = useState<string>('all');
+  const [filter, setFilter] = useState<string>('upcoming');
   const [search, setSearch] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
@@ -42,6 +42,31 @@ const MyRidesPage = () => {
     // Simulate API call
     setTimeout(() => {
       const mockRides: Ride[] = [
+        {
+          id: 'ride-0',
+          status: 'upcoming',
+          date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // 1 day in future
+          origin: 'Delhi',
+          destination: 'Chandigarh',
+          price: 400,
+          seats: {
+            total: 3,
+            available: 2
+          },
+          car: {
+            make: 'Maruti',
+            model: 'Swift',
+            color: 'White'
+          },
+          passengers: [
+            {
+              id: 'user-delhi-1',
+              firstName: 'Rahul',
+              lastName: 'Sharma',
+              avatar: '/lovable-uploads/8709c341-a273-4678-8345-65a0ccb7e0ec.png'
+            }
+          ]
+        },
         {
           id: 'ride-1',
           status: 'upcoming',
@@ -289,7 +314,7 @@ const MyRidesPage = () => {
                   </div>
                 </div>
                 
-                <span className="text-primary font-semibold">${ride.price}</span>
+                <span className="text-primary font-semibold">₹{ride.price}</span>
               </div>
               
               {/* Show passengers */}
