@@ -77,7 +77,7 @@ const indianDrivers = [
   },
 ];
 
-const delhiToChandigarhRides = [
+const delhiToChandigarhRides: Ride[] = [
   {
     id: "r1",
     driverId: "d1",
@@ -92,7 +92,7 @@ const delhiToChandigarhRides = [
     currency: "₹",
     carModel: "Maruti Swift",
     carColor: "White",
-    status: "active",
+    status: "active" as "active",
     createdAt: new Date(),
   },
   {
@@ -109,7 +109,7 @@ const delhiToChandigarhRides = [
     currency: "₹",
     carModel: "Hyundai i20",
     carColor: "Silver",
-    status: "active",
+    status: "active" as "active",
     createdAt: new Date(),
   },
   {
@@ -126,7 +126,7 @@ const delhiToChandigarhRides = [
     currency: "₹",
     carModel: "Honda City",
     carColor: "Blue",
-    status: "active",
+    status: "active" as "active",
     createdAt: new Date(),
   },
   {
@@ -143,7 +143,7 @@ const delhiToChandigarhRides = [
     currency: "₹",
     carModel: "Mahindra XUV300",
     carColor: "Red",
-    status: "active",
+    status: "active" as "active",
     createdAt: new Date(),
   },
   {
@@ -160,7 +160,7 @@ const delhiToChandigarhRides = [
     currency: "₹",
     carModel: "Toyota Innova",
     carColor: "Black",
-    status: "active",
+    status: "active" as "active",
     createdAt: new Date(),
   },
 ];

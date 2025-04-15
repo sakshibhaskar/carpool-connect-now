@@ -24,7 +24,7 @@ export interface Ride {
   estimatedArrival: string;
   availableSeats: number;
   price: number;
-  currency: string;
+  currency: string; // This accepts any string value including '₹' and 'INR'
   carModel?: string;
   carColor?: string;
   allowedLuggage?: string;

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Ride } from '@/types';
@@ -6,7 +5,11 @@ import { generateMockRides } from '@/lib/utils';
 import RideDetail from '@/components/rides/RideDetail';
 import SOSButton from '@/components/emergency/SOSButton';
 
-const mockRides = generateMockRides(10);
+// Ensure mock rides are created with proper status types
+const mockRides = generateMockRides(10).map(ride => ({
+  ...ride,
+  status: "active" as "active" // Force the status to be the correct literal type
+}));
 
 const RideDetailPage = () => {
   const { id } = useParams<{ id: string }>();
