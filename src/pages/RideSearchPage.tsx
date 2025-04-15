@@ -1,10 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Filter } from 'lucide-react';
 import RideCard from '@/components/rides/RideCard';
-import { Ride, User } from '@/types';
-import { formatCurrency } from '@/lib/utils';
+import { Ride } from '@/types';
 import { Button } from '@/components/ui/button';
 import SOSButton from '@/components/emergency/SOSButton';
 import {
@@ -25,8 +23,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-// Hardcoded Indian driver names
-const indianDrivers: User[] = [
+const indianDrivers = [
   {
     id: "d1",
     firstName: "Rajesh",
@@ -80,8 +77,7 @@ const indianDrivers: User[] = [
   },
 ];
 
-// Hardcoded rides from Delhi to Chandigarh
-const delhiToChandigarhRides: Ride[] = [
+const delhiToChandigarhRides = [
   {
     id: "r1",
     driverId: "d1",
@@ -179,23 +175,21 @@ const RideSearchPage = () => {
   const [priceSort, setPriceSort] = useState<string>("none");
   const [showNoRides, setShowNoRides] = useState(false);
 
-  // Parse search parameters
   const searchParams = new URLSearchParams(location.search);
-  const origin = searchParams.get('origin') || '';
-  const destination = searchParams.get('destination') || '';
+  const origin = searchParams.get('origin')?.trim().toLowerCase() || '';
+  const destination = searchParams.get('destination')?.trim().toLowerCase() || '';
   const dateParam = searchParams.get('date') || '';
   const passengers = Number(searchParams.get('passengers')) || 1;
 
   useEffect(() => {
-    // Simulate API call with a slight delay
     const timer = setTimeout(() => {
-      // Check if searching for Delhi to Chandigarh
-      const isDelhi = origin.toLowerCase() === 'delhi';
-      const isChandigarh = destination.toLowerCase() === 'chandigarh';
+      const isDelhi = origin === 'delhi';
+      const isChandigarh = destination === 'chandigarh';
       const isToday = !dateParam || new Date(dateParam).toDateString() === new Date().toDateString();
       
+      console.log('Search params:', { isDelhi, isChandigarh, isToday, origin, destination });
+      
       if (isDelhi && isChandigarh && isToday) {
-        // Filter hardcoded rides based on passenger count
         const availableRides = delhiToChandigarhRides.filter(ride => 
           passengers <= ride.availableSeats
         );
@@ -215,16 +209,13 @@ const RideSearchPage = () => {
     return () => clearTimeout(timer);
   }, [origin, destination, dateParam, passengers]);
 
-  // Apply filters when filter values change
   useEffect(() => {
     let result = [...rides];
     
-    // Apply gender filter
     if (genderFilter !== "all") {
       result = result.filter(ride => ride.driver?.gender === genderFilter);
     }
     
-    // Apply price sort
     if (priceSort === "lowToHigh") {
       result = result.sort((a, b) => a.price - b.price);
     } else if (priceSort === "highToLow") {
@@ -234,7 +225,6 @@ const RideSearchPage = () => {
     setFilteredRides(result);
   }, [genderFilter, priceSort, rides]);
 
-  // Reset filters
   const handleResetFilters = () => {
     setGenderFilter("all");
     setPriceSort("none");
@@ -242,7 +232,6 @@ const RideSearchPage = () => {
 
   return (
     <div className="min-h-screen pb-20">
-      {/* Header */}
       <div className="sticky top-0 z-10 bg-white p-4 shadow-sm flex items-center justify-between">
         <button 
           onClick={() => navigate(-1)}
@@ -276,7 +265,6 @@ const RideSearchPage = () => {
             </SheetHeader>
             
             <div className="py-6 space-y-6">
-              {/* Gender Filter */}
               <div>
                 <h3 className="text-base font-semibold mb-3">Driver Gender</h3>
                 <RadioGroup 
@@ -299,7 +287,6 @@ const RideSearchPage = () => {
                 </RadioGroup>
               </div>
               
-              {/* Price Filter */}
               <div>
                 <h3 className="text-base font-semibold mb-3">Price</h3>
                 <Select value={priceSort} onValueChange={setPriceSort}>
@@ -328,7 +315,6 @@ const RideSearchPage = () => {
         </Sheet>
       </div>
       
-      {/* Results list */}
       <div className="p-4">
         {loading ? (
           <div className="space-y-4">
@@ -402,7 +388,6 @@ const RideSearchPage = () => {
         )}
       </div>
       
-      {/* SOS Button */}
       <SOSButton />
     </div>
   );
