@@ -1,23 +1,42 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Clock, MapPin, DollarSign, Car, Plus, Minus, Users, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, ArrowLeft, Indian } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { Ride } from '@/types';
+
+const initialRide: Ride = {
+  id: "new-ride-1",
+  driverId: "d1",
+  origin: "Delhi",
+  destination: "Chandigarh",
+  departureDate: new Date(),
+  departureTime: "09:00",
+  estimatedArrival: "12:00",
+  availableSeats: 2,
+  price: 400,
+  currency: "₹",
+  carModel: "Maruti Swift",
+  carColor: "White",
+  status: "active",
+  createdAt: new Date(),
+};
 
 const PublishRide = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [ride] = useState<Ride>(initialRide);
   const [formData, setFormData] = useState({
-    origin: '',
-    destination: '',
+    origin: 'Delhi',
+    destination: 'Chandigarh',
     departureDate: '',
     departureTime: '',
-    seats: 3,
-    price: '',
-    car: '',
+    seats: 2,
+    price: '400',
+    car: 'Maruti Swift',
     luggage: 'medium',
     description: '',
     phoneNumber: '',
@@ -58,7 +77,6 @@ const PublishRide = () => {
   };
 
   const handleNext = () => {
-    // Form validation for each step
     if (step === 1) {
       if (!formData.origin || !formData.destination) {
         toast.error('Please enter origin and destination');
@@ -87,6 +105,10 @@ const PublishRide = () => {
   };
 
   const handleBack = () => {
+    if (isSubmitted) {
+      setIsSubmitted(false);
+      return;
+    }
     if (step > 1) {
       setStep(step - 1);
     } else {
@@ -95,13 +117,101 @@ const PublishRide = () => {
   };
 
   const handleSubmit = () => {
-    // Submit the ride
+    setIsSubmitted(true);
     toast.success('Your ride has been published successfully!');
-    // Navigate to user's rides page
-    setTimeout(() => {
-      navigate('/my-rides');
-    }, 1000);
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen p-6">
+        <div className="flex items-center mb-6">
+          <button onClick={handleBack} className="p-1 mr-2">
+            <ArrowLeft className="h-6 w-6 text-secondary" />
+          </button>
+          <h1 className="text-xl font-semibold text-secondary">Published Ride Details</h1>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm text-gray-500">From</p>
+                  <p className="font-semibold">{ride.origin}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm text-gray-500">To</p>
+                  <p className="font-semibold">{ride.destination}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex items-center space-x-2">
+                <Calendar className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm text-gray-500">Date</p>
+                  <p className="font-semibold">
+                    {ride.departureDate.toLocaleDateString('en-IN', { 
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Clock className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm text-gray-500">Time</p>
+                  <p className="font-semibold">{ride.departureTime}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between border-b pb-4">
+              <div>
+                <p className="text-sm text-gray-500">Price per seat</p>
+                <p className="text-xl font-bold text-secondary">
+                  {ride.currency}{ride.price}
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Users className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm text-gray-500">Available seats</p>
+                  <p className="font-semibold">{ride.availableSeats}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b pb-4">
+              <p className="text-sm text-gray-500">Car details</p>
+              <p className="font-semibold">{ride.carModel} ({ride.carColor})</p>
+            </div>
+
+            <div>
+              <p className="text-sm text-gray-500">Gender preference</p>
+              <p className="font-semibold">{formData.genderPreference === 'any' ? 'Any gender welcome' : 'Same gender only'}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="fixed bottom-6 left-6 right-6">
+          <Button 
+            className="w-full" 
+            onClick={() => navigate('/my-rides')}
+          >
+            View My Rides
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const renderStep = () => {
     switch (step) {
@@ -362,7 +472,6 @@ const PublishRide = () => {
 
   return (
     <div className="min-h-screen p-6">
-      {/* Header with back button */}
       <div className="flex items-center mb-6">
         <button 
           onClick={handleBack}
@@ -378,7 +487,6 @@ const PublishRide = () => {
         </h1>
       </div>
       
-      {/* Progress indicator */}
       <div className="flex justify-between mb-6">
         {[1, 2, 3, 4].map((i) => (
           <div 
@@ -388,10 +496,8 @@ const PublishRide = () => {
         ))}
       </div>
       
-      {/* Step content */}
       {renderStep()}
       
-      {/* Navigation */}
       <div className="fixed bottom-6 left-6 right-6 flex space-x-3">
         {step > 1 && (
           <Button 
